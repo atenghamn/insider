@@ -26,8 +26,6 @@ route.get('/:id', async (req, res) => {
 
 // Create game
 route.post('/', async (req, res) => {
-  console.log('Username är', req.user.username)
-
   const hostPlayer = await prisma.player.findUnique({
     where: {
       username: req.user.username
@@ -107,11 +105,9 @@ route.get('/start/:id', async (req, res) => {
   })
 
   if (req.user.id != game.host) {
-    console.log('Skickar en 401')
     return res.sendStatus(401)
   }
   if (game.numberOfPlayer < 4) {
-    console.log('Skickar en 100')
     return res.sendStatus(100)
   }
 

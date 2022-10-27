@@ -16,7 +16,6 @@ import {
 import Winner from "./Winner";
 
 export default function InGame() {
-  const navigate = useNavigate();
   const [game, setGame] = useState({});
   const [gameId, setGameId] = useState(0);
   const [player, setPlayer] = useState({});
@@ -31,7 +30,6 @@ export default function InGame() {
       });
 
       let response = await getPlayer.json();
-      console.log("Hämtar nytt gameId");
       setGameId(response.gameId);
       setPlayer(response);
     };
@@ -40,12 +38,6 @@ export default function InGame() {
     const fetchInterval = setInterval(fetchGames, 3000);
     return () => clearInterval(fetchInterval);
   }, [gameId]);
-
-  useEffect(() => {
-    console.log("Playerobjektet: ", player);
-    console.log("GameId: ", gameId);
-    console.log("Game: ", game);
-  }, [player, gameId, game]);
 
   const fetchGames = async () => {
     if (gameId !== 0) {
@@ -64,7 +56,6 @@ export default function InGame() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(username);
     let response = await fetch("http://localhost:5000/game/winner/" + gameId, {
       method: "POST",
       body: JSON.stringify({
@@ -75,7 +66,6 @@ export default function InGame() {
       },
       credentials: "include",
     });
-    console.log("Response", response);
     if (response.status === 200) {
       let user = await response.json()
       setWinner(user.username)

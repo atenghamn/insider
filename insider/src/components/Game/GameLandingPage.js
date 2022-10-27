@@ -7,7 +7,6 @@ const GameLandingPage = () => {
     <div>
       <Grid container spacing={2} marginTop={30}>
         <Grid item xs={4}></Grid>
-
         <Grid item xs={4}>
           <Games />
         </Grid>

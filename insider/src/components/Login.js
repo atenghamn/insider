@@ -1,41 +1,48 @@
-
-import { useState } from 'react';
-import {Avatar, Button , CssBaseline, TextField, Grid, Box,  Typography, Container} from '@mui/material'
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom'
+import { useState } from "react";
+import {
+  Avatar,
+  Button,
+  CssBaseline,
+  TextField,
+  Grid,
+  Box,
+  Typography,
+  Container,
+} from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
 
 const theme = createTheme();
 export default function SignIn() {
-
-   const navigate = useNavigate()
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleUsername = (e) => {
-    setUsername(e.target.value)
-  }
+    setUsername(e.target.value);
+  };
   const handlePassword = (e) => {
-    setPassword(e.target.value)
-  }
+    setPassword(e.target.value);
+  };
 
   const handleSubmit = async (event) => {
-    event.preventDefault()
-  
+    event.preventDefault();
+
     let response = await fetch("http://localhost:5000/login", {
-        method: "POST",
-        body: JSON.stringify({
-          username: username, 
-          password: password
-        }),
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        credentials: 'include'
-      })
-      
-     if (response.status === 200){     
-       navigate('/')
-     }
+      method: "POST",
+      body: JSON.stringify({
+        username: username,
+        password: password,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+
+    if (response.status === 200) {
+      navigate("/");
+    }
   };
 
   return (
@@ -45,14 +52,12 @@ export default function SignIn() {
         <Box
           sx={{
             marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-
-          </Avatar>
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}></Avatar>
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
@@ -77,7 +82,7 @@ export default function SignIn() {
               id="password"
               onChange={handlePassword}
             />
-  
+
             <Button
               type="submit"
               fullWidth
@@ -88,8 +93,7 @@ export default function SignIn() {
               Sign In
             </Button>
             <Grid container>
-              <Grid item>
-              </Grid>
+              <Grid item></Grid>
             </Grid>
           </Box>
         </Box>
