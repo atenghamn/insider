@@ -31,7 +31,6 @@ expServer.use(passport.authenticate('session'))
 expServer.post('/login', passport.authenticate('local', {}), (req, res) => res.sendStatus(200))
 
 expServer.post('/logout', function (req, res, next) {
-  console.log('---------------------------------------------------------------------------------------------------------')
   req.logout(function (err) {
     if (err) { return next(err) }
     res.sendStatus(200)

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   CircularProgress,
   Box,
@@ -35,18 +34,27 @@ export default function InGame() {
     };
     fetchId();
 
-    const fetchInterval = setInterval(fetchGames, 3000);
-    return () => clearInterval(fetchInterval);
-  }, [gameId]);
+    if (loaded === false) {
+      const fetchInterval = setInterval(fetchGames, 3000);
+      return () => clearInterval(fetchInterval);
+    }
+   
+  }, [gameId, loaded]);
 
   const fetchGames = async () => {
-    if (gameId !== 0) {
+    console.log(loaded)
+    if (gameId !== 0 && loaded === false) {
       const data = await fetch("http://localhost:5000/game/" + gameId, {
         credentials: "include",
       });
       let body = await data.json();
+      console.log("Fetched game: ", body)
       setGame(body);
       setLoaded(true);
+      console.log(loaded)
+      console.log("playerId: ", player)
+    
+
     }
   };
 
@@ -76,18 +84,19 @@ export default function InGame() {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <Grid container marginTop={30}>
-        <Grid item>{(!loaded || !game?.isActive) && loaded === false && <CircularProgress />}
+        {/* KOLLA PÅ DETTA  */}
+        <Grid item>{(!loaded || !game?.isActive) && <CircularProgress />} 
         </Grid>
         <Grid item>
           <Box sx={{ display: "flex" }}>
-            {loaded && game?.isActive && (
+            {(loaded && game?.isActive) && (
               <Card>
                 <CardContent>
                   <Typography variant="h3">THE GAME IS UNDERWAY...</Typography>
                 </CardContent>
               </Card>
             )}
-            {loaded && player.id == game?.host && winner === undefined && game?.isActive && (
+            {loaded && player.id === game?.host && winner === undefined && game?.isActive && (
               <Card>
                 <CardContent>
                   <Typography variant="h3">Report Winner...</Typography>

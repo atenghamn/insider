@@ -162,7 +162,8 @@ route.get('/start/:id', async (req, res) => {
       cTwo: game.cTwo,
       cThree: game.cThree,
       cFour: game.cFour,
-      cFive: game.cFive
+      cFive: game.cFive,
+      isActive: true
     }
   })
 
