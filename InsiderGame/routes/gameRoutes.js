@@ -8,7 +8,8 @@ const route = express.Router()
 route.get('/', async (req, res) => {
   const openGames = await prisma.game.findMany({
     where: {
-      isActive: false
+      isActive: false,
+      isDone: false
     }
   })
   return res.json(openGames)
@@ -108,7 +109,7 @@ route.get('/start/:id', async (req, res) => {
     return res.sendStatus(401)
   }
   if (game.numberOfPlayer < 4) {
-    return res.sendStatus(100)
+    return res.sendStatus(400)
   }
 
   const unFiltererdPlayers = await prisma.player.findMany({
@@ -170,7 +171,7 @@ route.get('/start/:id', async (req, res) => {
   return res.json(game)
 })
 
-// Report winner
+// Report winners
 route.post('/winner/:id', async (req, res) => {
   const game = await prisma.game.findUnique({
     where: {
@@ -192,9 +193,13 @@ route.post('/winner/:id', async (req, res) => {
   }
   winner.totalScore += 10
 
-  await prisma.game.delete({
+  await prisma.game.update({
     where: {
       id: game.id
+    },
+    data: {
+      isDone: true,
+      winner: winner.id
     }
   })
   await prisma.player.update({

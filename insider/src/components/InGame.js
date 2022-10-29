@@ -20,7 +20,7 @@ export default function InGame() {
   const [player, setPlayer] = useState({});
   const [username, setUsername] = useState("");
   const [loaded, setLoaded] = useState(false);
-  const [winner, setWinner] = useState()
+  const [winner, setWinner] = useState();
 
   useEffect(() => {
     const fetchId = async () => {
@@ -34,27 +34,23 @@ export default function InGame() {
     };
     fetchId();
 
-    if (loaded === false) {
-      const fetchInterval = setInterval(fetchGames, 3000);
-      return () => clearInterval(fetchInterval);
-    }
-   
-  }, [gameId, loaded]);
+    const fetchInterval = setInterval(fetchGames, 3000);
+    return () => clearInterval(fetchInterval);
+  }, [gameId]);
 
   const fetchGames = async () => {
-    console.log(loaded)
     if (gameId !== 0 && loaded === false) {
       const data = await fetch("http://localhost:5000/game/" + gameId, {
         credentials: "include",
       });
       let body = await data.json();
-      console.log("Fetched game: ", body)
       setGame(body);
       setLoaded(true);
-      console.log(loaded)
-      console.log("playerId: ", player)
-    
-
+      if (game.isDone) {
+        await fetch("http://localhost:5000/game/players/" + game.winner);
+        let playerWhoWon = await data.json();
+        setWinner(playerWhoWon.username);
+      }
     }
   };
 
@@ -75,8 +71,9 @@ export default function InGame() {
       credentials: "include",
     });
     if (response.status === 200) {
-      let user = await response.json()
-      setWinner(user.username)
+      let user = await response.json();
+      console.log(user.username)
+      setWinner(user.username);
     }
   };
 
@@ -84,45 +81,44 @@ export default function InGame() {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <Grid container marginTop={30}>
-        {/* KOLLA PÅ DETTA  */}
-        <Grid item>{(!loaded || !game?.isActive) && <CircularProgress />} 
-        </Grid>
+        <Grid item>{(!loaded || !game?.isActive) && <CircularProgress />}</Grid>
         <Grid item>
           <Box sx={{ display: "flex" }}>
-            {(loaded && game?.isActive) && (
+            {loaded && game?.isActive && (
               <Card>
                 <CardContent>
                   <Typography variant="h3">THE GAME IS UNDERWAY...</Typography>
                 </CardContent>
               </Card>
             )}
-            {loaded && player.id === game?.host && winner === undefined && game?.isActive && (
-              <Card>
-                <CardContent>
-                  <Typography variant="h3">Report Winner...</Typography>
-                  <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="username"
-                    label="username"
-                    name="username"
-                    autoFocus
-                    onChange={handleUsername}
-                  />
-                </CardContent>
-                <CardActions>
-                  <Button size="small" onClick={handleSubmit}>
-                    Submit
-                  </Button>
-                </CardActions>
-              </Card>
-            )}
+            {loaded &&
+              player.id === game?.host &&
+              winner === undefined &&
+              game?.isActive && (
+                <Card>
+                  <CardContent>
+                    <Typography variant="h3">Report Winner...</Typography>
+                    <TextField
+                      margin="normal"
+                      required
+                      fullWidth
+                      id="username"
+                      label="username"
+                      name="username"
+                      autoFocus
+                      onChange={handleUsername}
+                    />
+                  </CardContent>
+                  <CardActions>
+                    <Button size="small" onClick={handleSubmit}>
+                      Submit
+                    </Button>
+                  </CardActions>
+                </Card>
+              )}
           </Box>
         </Grid>
-        <Grid item>
-         {winner !== undefined  &&  < Winner winner={winner}/>}
-        </Grid>
+        <Grid item>{game.isDone === true && <Winner winner={winner} />}</Grid>
       </Grid>
     </Container>
   );

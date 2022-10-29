@@ -32,11 +32,9 @@ const Game = ({ game, setGames }) => {
         credentials: "include",
       }
     );
-
-    console.log(response);
-
+    
     switch (response.status) {
-      case 100:
+      case 400:
         console.log("Wait for more players");
         break;
 

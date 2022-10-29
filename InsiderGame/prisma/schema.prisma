@@ -24,6 +24,7 @@ model game {
   cFive Int?
   winner Int?
   isActive Boolean @default(false)
+  isDone Boolean @default(false)
 }
 
 model player {
